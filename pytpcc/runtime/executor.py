@@ -83,26 +83,10 @@ class Executor:
     ## DEF
     
     def doOne(self):
-        """Selects and executes a transaction at random. The number of new order transactions executed per minute is the official "tpmC" metric. See TPC-C 5.4.2 (page 71)."""
-        
-        ## This is not strictly accurate: The requirement is for certain
-        ## *minimum* percentages to be maintained. This is close to the right
-        ## thing, but not precisely correct. See TPC-C 5.2.4 (page 68).
-        x = rand.number(1, 100)
-        params = None
-        txn = None
-        if x <= 4: ## 4%
-            txn, params = (constants.TransactionTypes.STOCK_LEVEL, self.generateStockLevelParams())
-        elif x <= 4 + 4: ## 4%
-            txn, params = (constants.TransactionTypes.DELIVERY, self.generateDeliveryParams())
-        elif x <= 4 + 4 + 4: ## 4%
-            txn, params = (constants.TransactionTypes.ORDER_STATUS, self.generateOrderStatusParams())
-        elif x <= 43 + 4 + 4 + 4: ## 43%
-            txn, params = (constants.TransactionTypes.PAYMENT, self.generatePaymentParams())
-        else: ## 45%
-            assert x > 100 - 45
-            txn, params = (constants.TransactionTypes.NEW_ORDER, self.generateNewOrderParams())
-        
+        """Execute STOCK_LEVEL only to simulate a stable slow-query workload."""
+
+        txn = constants.TransactionTypes.STOCK_LEVEL
+        params = self.generateStockLevelParams()
         return (txn, params)
     ## DEF
 
